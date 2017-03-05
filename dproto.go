@@ -22,14 +22,16 @@ package dproto
 import (
 	"fmt"
 
-	"os"
-
-	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
 
 // FieldNum represents Protobuf's field numbers
 type FieldNum uint32
+
+type FieldValue struct {
+	field FieldNum
+	value interface{}
+}
 
 // ProtoFieldMap associates field numbers with it's high-level Protobuf type.
 type ProtoFieldMap struct {
@@ -91,26 +93,39 @@ func (fm *ProtoFieldMap) RemoveByType(typ descriptor.FieldDescriptorProto_Type) 
 func (fm *ProtoFieldMap) Print() {
 	fmt.Println(fm)
 }
+
+// DecodeMessage will decode all fields in the specified message using the
+// current ProtoFieldMap
+func (fm *ProtoFieldMap) DecodeMessage(m *WireMessage) ([]FieldValue, error) {
+	values := make([]FieldValue, 0, m.GetFieldCount())
+	err := error(nil)
+
+	for _, f := range m.GetFieldNums() {
+		// Ignore fields that we are not aware/interested of/in - a feature
+		if typ, ok := fm.field2type[f]; ok {
+			// Pass over decodings that don't succeed - report first error
+			if v, e := m.DecodeAs(f, typ); e == nil {
+				values = append(values, FieldValue{f, v})
+			} else {
+				// save first error
+				if err == nil {
+					err = e
+				}
+			}
+		}
+	}
+
+	return values, err
 }
 
-var protoType2WireType = map[descriptor.FieldDescriptorProto_Type]WireType{
-	descriptor.FieldDescriptorProto_TYPE_DOUBLE:  proto.WireFixed64,
-	descriptor.FieldDescriptorProto_TYPE_FLOAT:   proto.WireFixed32,
-	descriptor.FieldDescriptorProto_TYPE_INT64:   proto.WireVarint,
-	descriptor.FieldDescriptorProto_TYPE_UINT64:  proto.WireVarint,
-	descriptor.FieldDescriptorProto_TYPE_INT32:   proto.WireVarint,
-	descriptor.FieldDescriptorProto_TYPE_UINT32:  proto.WireVarint,
-	descriptor.FieldDescriptorProto_TYPE_FIXED64: proto.WireFixed64,
-	descriptor.FieldDescriptorProto_TYPE_FIXED32: proto.WireFixed32,
-	descriptor.FieldDescriptorProto_TYPE_BOOL:    proto.WireVarint,
-	descriptor.FieldDescriptorProto_TYPE_STRING:  proto.WireBytes,
-	// descriptor.FieldDescriptorProto_TYPE_GROUP: proto.WireStartGroup
-	descriptor.FieldDescriptorProto_TYPE_MESSAGE:  proto.WireBytes,
-	descriptor.FieldDescriptorProto_TYPE_ENUM:     proto.WireVarint,
-	descriptor.FieldDescriptorProto_TYPE_SFIXED32: proto.WireFixed32,
-	descriptor.FieldDescriptorProto_TYPE_SFIXED64: proto.WireFixed64,
-	descriptor.FieldDescriptorProto_TYPE_SINT32:   proto.WireVarint,
-	descriptor.FieldDescriptorProto_TYPE_SINT64:   proto.WireVarint,
+// DecodeBuffer will unmarshal and decode all fields in the specified buffer
+// using the current ProtoFieldMap
+func (fm *ProtoFieldMap) DecodeBuffer(buf []byte) ([]FieldValue, error) {
+	m := NewWireMessage()
+	if err := m.Unmarshal(buf); err != nil {
+		return nil, err
+	}
+	return fm.DecodeMessage(m)
 }
 
 // Unmarshal will unmarshal a byte array into a WireMessage

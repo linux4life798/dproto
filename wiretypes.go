@@ -4,7 +4,12 @@
 
 package dproto
 
-import "math"
+import (
+	"math"
+
+	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+)
 
 // Notes Section
 //
@@ -196,4 +201,26 @@ func (v *WireFixed64) FromSfixed64(i int64) {
 // FromDouble sets the wiretype from a Protobuf double
 func (v *WireFixed64) FromDouble(i float64) {
 	*v = WireFixed64(math.Float64bits(i))
+}
+
+// A static table that maps Protobuf types to their respective wire types.
+// This table is also go for verifying FieldDescriptorProto_Type parameters
+var protoType2WireType = map[descriptor.FieldDescriptorProto_Type]WireType{
+	descriptor.FieldDescriptorProto_TYPE_DOUBLE:  proto.WireFixed64,
+	descriptor.FieldDescriptorProto_TYPE_FLOAT:   proto.WireFixed32,
+	descriptor.FieldDescriptorProto_TYPE_INT64:   proto.WireVarint,
+	descriptor.FieldDescriptorProto_TYPE_UINT64:  proto.WireVarint,
+	descriptor.FieldDescriptorProto_TYPE_INT32:   proto.WireVarint,
+	descriptor.FieldDescriptorProto_TYPE_UINT32:  proto.WireVarint,
+	descriptor.FieldDescriptorProto_TYPE_FIXED64: proto.WireFixed64,
+	descriptor.FieldDescriptorProto_TYPE_FIXED32: proto.WireFixed32,
+	descriptor.FieldDescriptorProto_TYPE_BOOL:    proto.WireVarint,
+	descriptor.FieldDescriptorProto_TYPE_STRING:  proto.WireBytes,
+	// descriptor.FieldDescriptorProto_TYPE_GROUP: proto.WireStartGroup
+	descriptor.FieldDescriptorProto_TYPE_MESSAGE:  proto.WireBytes,
+	descriptor.FieldDescriptorProto_TYPE_ENUM:     proto.WireVarint,
+	descriptor.FieldDescriptorProto_TYPE_SFIXED32: proto.WireFixed32,
+	descriptor.FieldDescriptorProto_TYPE_SFIXED64: proto.WireFixed64,
+	descriptor.FieldDescriptorProto_TYPE_SINT32:   proto.WireVarint,
+	descriptor.FieldDescriptorProto_TYPE_SINT64:   proto.WireVarint,
 }
