@@ -34,57 +34,63 @@ type FieldNum uint32
 // ProtoFieldMap associates field numbers with it's high-level Protobuf type.
 type ProtoFieldMap struct {
 	field2type map[FieldNum]descriptor.FieldDescriptorProto_Type
-	type2field map[descriptor.FieldDescriptorProto_Type]FieldNum
 }
 
 // NewProtoFieldMap create a new ProtoFieldMap object.
 func NewProtoFieldMap() *ProtoFieldMap {
-	var m = new(ProtoFieldMap)
-	m.Reset()
-	return m
+	var fm = new(ProtoFieldMap)
+	fm.Reset()
+	return fm
 }
 
 // Reset clears the stored associations inside a ProtoFieldMap
-func (m *ProtoFieldMap) Reset() {
-	m.field2type = make(map[FieldNum]descriptor.FieldDescriptorProto_Type)
-	m.type2field = make(map[descriptor.FieldDescriptorProto_Type]FieldNum)
+func (fm *ProtoFieldMap) Reset() {
+	fm.field2type = make(map[FieldNum]descriptor.FieldDescriptorProto_Type)
 }
 
 // Add adds a Field-Type association to a ProtoFieldMap
-func (m *ProtoFieldMap) Add(field FieldNum, typ descriptor.FieldDescriptorProto_Type) {
-	m.field2type[field] = typ
-	m.type2field[typ] = field
-
-	if len(m.field2type) != len(m.type2field) {
-		fmt.Fprintf(os.Stderr, "Error - ProtoTypeMap is inconsistent")
+func (fm *ProtoFieldMap) Add(field FieldNum, typ descriptor.FieldDescriptorProto_Type) (ok bool) {
+	if _, ok := protoType2WireType[typ]; ok {
+		fm.field2type[field] = typ
 	}
+	return
 }
 
 // RemoveByField removes the Field-Type association from a ProtoFieldMap
 // that has the specified field number.
 // It returns true if the association was found and removed, false otherwise
-func (m *ProtoFieldMap) RemoveByField(field FieldNum) (ok bool) {
-	if typ, ok := m.field2type[field]; ok {
-		delete(m.field2type, field)
-		delete(m.type2field, typ)
+func (fm *ProtoFieldMap) RemoveByField(field FieldNum) (ok bool) {
+	if _, ok := fm.field2type[field]; ok {
+		delete(fm.field2type, field)
 	}
 	return
 }
 
-// RemoveByType removes the Field-Type association from a ProtoFieldMap
-// that has the specified type.
-// It returns true if the association was found and removed, false otherwise
-func (m *ProtoFieldMap) RemoveByType(typ descriptor.FieldDescriptorProto_Type) (ok bool) {
-	if field, ok := m.type2field[typ]; ok {
-		delete(m.type2field, typ)
-		delete(m.field2type, field)
+// RemoveByType removes all field Field-Type association from a ProtoFieldMap
+// that has the specified type. This will check all map entries.
+// It returns true if an association was found and removed, false otherwise
+func (fm *ProtoFieldMap) RemoveByType(typ descriptor.FieldDescriptorProto_Type) bool {
+	deleteList := make([]FieldNum, 0, len(fm.field2type))
+	for k, v := range fm.field2type {
+		if v == typ {
+			deleteList = append(deleteList, k)
+		}
 	}
-	return
+
+	if len(deleteList) == 0 {
+		return false
+	}
+
+	for _, k := range deleteList {
+		delete(fm.field2type, k)
+	}
+	return true
 }
 
 // Print shows the ProtoFieldMap to the user for debugging purposes.
-func (m *ProtoFieldMap) Print() {
-	fmt.Println(m)
+func (fm *ProtoFieldMap) Print() {
+	fmt.Println(fm)
+}
 }
 
 var protoType2WireType = map[descriptor.FieldDescriptorProto_Type]WireType{
