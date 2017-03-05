@@ -16,6 +16,12 @@ import (
 	"errors"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+)
+
+const (
+	defaultMarshalBuffSize = 10
+	baseFnumsCapacity      = 10
 )
 
 // ErrMalformedProtoBuf is returned when some operation has determined that
@@ -25,6 +31,10 @@ var ErrMalformedProtoBuf = errors.New("Malformed protobuf buffer")
 // ErrMessageFieldMissing is returned when some messgae get could not find
 // the specified field
 var ErrMessageFieldMissing = errors.New("Message field not found")
+
+// ErrInvalidProtoBufType is returned when an invalid Protobuf type was
+// specified
+var ErrInvalidProtoBufType = errors.New("Invalid protobuf type")
 
 // WireMessage holds the data elements of a marshalled Protobuf message.
 // A marshalled Protobuf message is simply the concatenation of all the
@@ -87,6 +97,29 @@ func (m *WireMessage) Remove(field FieldNum) {
 	delete(m.fixed32, field)
 	delete(m.fixed64, field)
 	delete(m.bytes, field)
+}
+
+// GetFieldCount gets the number of fields in the WireMessage
+func (m *WireMessage) GetFieldCount() int {
+	return len(m.varint) + len(m.fixed32) + len(m.fixed64) + len(m.bytes)
+}
+
+// GetFieldNums gets all field numbers contained in the WireMessage
+func (m *WireMessage) GetFieldNums() []FieldNum {
+	fields := make([]FieldNum, 0, m.GetFieldCount())
+	for k, _ := range m.varint {
+		fields = append(fields, k)
+	}
+	for k, _ := range m.fixed32 {
+		fields = append(fields, k)
+	}
+	for k, _ := range m.fixed64 {
+		fields = append(fields, k)
+	}
+	for k, _ := range m.bytes {
+		fields = append(fields, k)
+	}
+	return fields
 }
 
 // GetField fetches the raw wire field from m and returns it
@@ -238,6 +271,54 @@ func (m *WireMessage) DecodeMessage(field FieldNum) (*WireMessage, error) {
 		return emmsg, emmsg.Unmarshal(bytes)
 	}
 	return nil, ErrMessageFieldMissing
+}
+
+func (m *WireMessage) DecodeAs(field FieldNum, pbtype descriptor.FieldDescriptorProto_Type) (val interface{}, err error) {
+	val = 0
+	err = nil
+	ok := true
+
+	switch pbtype {
+	case descriptor.FieldDescriptorProto_TYPE_INT32:
+		val, ok = m.DecodeInt32(field)
+	case descriptor.FieldDescriptorProto_TYPE_INT64:
+		val, ok = m.DecodeInt64(field)
+	case descriptor.FieldDescriptorProto_TYPE_UINT32:
+		val, ok = m.DecodeUint32(field)
+	case descriptor.FieldDescriptorProto_TYPE_UINT64:
+		val, ok = m.DecodeUint64(field)
+	case descriptor.FieldDescriptorProto_TYPE_SINT32:
+		val, ok = m.DecodeSint32(field)
+	case descriptor.FieldDescriptorProto_TYPE_SINT64:
+		val, ok = m.DecodeSint64(field)
+	case descriptor.FieldDescriptorProto_TYPE_BOOL:
+		val, ok = m.DecodeBool(field)
+	case descriptor.FieldDescriptorProto_TYPE_FIXED32:
+		val, ok = m.DecodeFixed32(field)
+	case descriptor.FieldDescriptorProto_TYPE_SFIXED32:
+		val, ok = m.DecodeSfixed32(field)
+	case descriptor.FieldDescriptorProto_TYPE_FLOAT:
+		val, ok = m.DecodeFloat(field)
+	case descriptor.FieldDescriptorProto_TYPE_FIXED64:
+		val, ok = m.DecodeFixed64(field)
+	case descriptor.FieldDescriptorProto_TYPE_SFIXED64:
+		val, ok = m.DecodeSfixed64(field)
+	case descriptor.FieldDescriptorProto_TYPE_DOUBLE:
+		val, ok = m.DecodeDouble(field)
+	case descriptor.FieldDescriptorProto_TYPE_STRING:
+		val, ok = m.DecodeString(field)
+	case descriptor.FieldDescriptorProto_TYPE_BYTES:
+		val, ok = m.DecodeBytes(field)
+	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
+		val, err = m.DecodeMessage(field)
+	default:
+		val, err = 0, ErrInvalidProtoBufType
+	}
+
+	if !ok {
+		err = ErrMessageFieldMissing
+	}
+	return
 }
 
 // Unmarshal sorts a ProtoBuf message into it's constituent
