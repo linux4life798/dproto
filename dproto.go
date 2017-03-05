@@ -29,8 +29,8 @@ import (
 type FieldNum uint32
 
 type FieldValue struct {
-	field FieldNum
-	value interface{}
+	Field FieldNum
+	Value interface{}
 }
 
 // ProtoFieldMap associates field numbers with it's high-level Protobuf type.
