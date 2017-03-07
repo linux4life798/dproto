@@ -1,0 +1,37 @@
+// A very simple protocol definition, consisting of only
+// one message.
+
+syntax = "proto2";
+
+enum TestEnum {
+	FIRST  = 0;
+	SECOND = 1;
+	THIRD  = 2;
+	FOURTH = 3;
+}
+
+message TestMessage {
+	// Varints
+	optional int32    myint32  = 1;
+	optional int64    myint64  = 2;
+	optional uint32   myuint32 = 3;
+	optional uint64   myuint64 = 4;
+	optional sint32   mysint32 = 5;
+	optional sint64   mysint64 = 6;
+	optional bool     mybool   = 7;
+	optional TestEnum myenum   = 8;
+
+	// Fixed64s
+	optional fixed64  myfixed64  = 9;
+	optional sfixed64 mysfixed64 = 10;
+	optional double   mydouble   = 11;
+
+	// Fixed32s
+	optional fixed32  myfixed32  = 12;
+	optional sfixed32 mysfixed32 = 13;
+	optional float    myfloat    = 14;
+
+	// Length Byte Arrays
+	optional string   mystring   = 15;
+}
+
