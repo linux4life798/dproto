@@ -327,6 +327,92 @@ func (m *WireMessage) DecodeAs(field FieldNum, pbtype descriptor.FieldDescriptor
 	return
 }
 
+
+// EncodeInt32 adds value to the WireMessage encoded as a Protobuf int32
+func (m *WireMessage) EncodeInt32(field FieldNum, value int32) {
+	m.AddVarint(field, new(WireVarint).FromInt32(value))
+}
+
+// EncodeInt64 adds value to the WireMessage encoded as a Protobuf int64
+func (m *WireMessage) EncodeInt64(field FieldNum, value int64) {
+	m.AddVarint(field, new(WireVarint).FromInt64(value))
+}
+
+// EncodeUint32 adds value to the WireMessage encoded as a Protobuf uint32
+func (m *WireMessage) EncodeUint32(field FieldNum, value uint32) {
+	m.AddVarint(field, new(WireVarint).FromUint32(value))
+}
+
+// EncodeUint64 adds value to the WireMessage encoded as a Protobuf uint64
+func (m *WireMessage) EncodeUint64(field FieldNum, value uint64) {
+	m.AddVarint(field, new(WireVarint).FromUint64(value))
+}
+
+// EncodeSint32 adds value to the WireMessage encoded as a Protobuf sint32
+func (m *WireMessage) EncodeSint32(field FieldNum, value int32) {
+	m.AddVarint(field, new(WireVarint).FromSint32(value))
+}
+
+// EncodeSint64 adds value to the WireMessage encoded as a Protobuf sint64
+func (m *WireMessage) EncodeSint64(field FieldNum, value int64) {
+	m.AddVarint(field, new(WireVarint).FromSint64(value))
+}
+
+// EncodeBool adds value to the WireMessage encoded as a Protobuf bool
+func (m *WireMessage) EncodeBool(field FieldNum, value bool) {
+	m.AddVarint(field, new(WireVarint).FromBool(value))
+}
+
+// EncodeFixed32 adds value to the WireMessage encoded as a Protobuf fixed32
+func (m *WireMessage) EncodeFixed32(field FieldNum, value uint32) {
+	m.AddFixed32(field, new(WireFixed32).FromFixed32(value))
+}
+
+// EncodeSfixed32 adds value to the WireMessage encoded as a Protobuf sfixed32
+func (m *WireMessage) EncodeSfixed32(field FieldNum, value int32) {
+	m.AddFixed32(field, new(WireFixed32).FromSfixed32(value))
+}
+
+// EncodeFloat adds value to the WireMessage encoded as a Protobuf float
+func (m *WireMessage) EncodeFloat(field FieldNum, value float32) {
+	m.AddFixed32(field, new(WireFixed32).FromFloat(value))
+}
+
+// EncodeFixed64 adds value to the WireMessage encoded as a Protobuf fixed64
+func (m *WireMessage) EncodeFixed64(field FieldNum, value uint64) {
+	m.AddFixed64(field, new(WireFixed64).FromFixed64(value))
+}
+
+// EncodeSfixed64 adds value to the WireMessage encoded as a Protobuf sfixed64
+func (m *WireMessage) EncodeSfixed64(field FieldNum, value int64) {
+	m.AddFixed64(field, new(WireFixed64).FromSfixed64(value))
+}
+
+// EncodeDouble fetches the field and decodes it as a Protobuf double
+func (m *WireMessage) EncodeDouble(field FieldNum, value float64) {
+	m.AddFixed64(field, new(WireFixed64).FromDouble(value))
+}
+
+// EncodeString adds value to the WireMessage encoded as a Protobuf string
+func (m *WireMessage) EncodeString(field FieldNum, value string) {
+	// TODO: Check correctness for unicode/7bit ASCII text
+	m.AddBytes(field, []byte(value))
+}
+
+// EncodeBytes adds value to the WireMessage encoded as a Protobuf bytes type
+func (m *WireMessage) EncodeBytes(field FieldNum, value []byte) {
+	m.AddBytes(field, value)
+}
+
+// EncodeMessage adds value to the WireMessage encoded as an embedded message
+func (m *WireMessage) EncodeMessage(field FieldNum, value *WireMessage) error {
+	bytes, err := value.Marshal()
+	if err != nil {
+		return err
+	}
+	m.AddBytes(field, bytes)
+	return nil
+}
 // Unmarshal sorts a ProtoBuf message into it's constituent
 // parts to be such that it's field can be accessed in constant time
 //
