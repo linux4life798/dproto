@@ -419,6 +419,10 @@ func (m *WireMessage) EncodeMessage(field FieldNum, value *WireMessage) error {
 	return nil
 }
 
+// EncodeAs adds value to the WireMessage encoded as the specified Protobuf type
+//
+// Errors will ensue if the generic type is not compatible with the specified
+// Protobuf type.
 func (m *WireMessage) EncodeAs(field FieldNum, value interface{}, pbtype descriptor.FieldDescriptorProto_Type) error {
 	err := ErrInvalidProtoBufType
 
