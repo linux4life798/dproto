@@ -94,53 +94,61 @@ func (v WireVarint) AsEnum() uint64 {
 }
 
 // FromInt32 sets the wiretype from a Protobuf int32
-func (v *WireVarint) FromInt32(i int32) {
+func (v *WireVarint) FromInt32(i int32) WireVarint {
 	*v = WireVarint(uint32(i))
+	return *v
 }
 
 // FromInt64 sets the wiretype from a Protobuf int64
-func (v *WireVarint) FromInt64(i int64) {
+func (v *WireVarint) FromInt64(i int64) WireVarint {
 	*v = WireVarint(i)
+	return *v
 }
 
 // FromUint32 sets the wiretype from a Protobuf uint32
-func (v *WireVarint) FromUint32(i uint32) {
+func (v *WireVarint) FromUint32(i uint32) WireVarint {
 	*v = WireVarint(i)
+	return *v
 }
 
 // FromUint64 sets the wiretype from a Protobuf uint64
-func (v *WireVarint) FromUint64(i uint64) {
+func (v *WireVarint) FromUint64(i uint64) WireVarint {
 	*v = WireVarint(i)
+	return *v
 }
 
 // FromSint32 sets the wiretype from a Protobuf sint32
-func (v *WireVarint) FromSint32(i int32) {
+func (v *WireVarint) FromSint32(i int32) WireVarint {
 	//TODO: Confirm correctness
 	// Taken from protobuff web page on encoding
 	*v = WireVarint((i << 1) ^ (i >> 31))
+	return *v
 }
 
 // FromSint64 sets the wiretype from a Protobuf sint64
-func (v *WireVarint) FromSint64(i int64) {
+func (v *WireVarint) FromSint64(i int64) WireVarint {
 	//TODO: Confirm correctness
 	// Taken from protobuff web page on encoding
 	*v = WireVarint((i << 1) ^ (i >> 63))
+	return *v
 }
 
 // FromBool sets the wiretype from a Protobuf bool
-func (v *WireVarint) FromBool(i bool) {
+func (v *WireVarint) FromBool(i bool) WireVarint {
 	//TODO: Confirm correctness
 	if i {
 		*v = WireVarint(1)
 	} else {
 		*v = WireVarint(0)
 	}
+	return *v
 }
 
 // FromEnum sets the wiretype from a Protobuf enum
-func (v *WireVarint) FromEnum(i uint64) {
+func (v *WireVarint) FromEnum(i uint64) WireVarint {
 	//TODO: Confirm correctness
 	*v = WireVarint(i)
+	return *v
 }
 
 // WireFixed32 represents the Protobuf fixed32 wire type
@@ -167,18 +175,21 @@ func (v WireFixed32) AsFloat() float32 {
 }
 
 // FromFixed32 sets the wiretype from a Protobuf fixed32
-func (v *WireFixed32) FromFixed32(i uint32) {
+func (v *WireFixed32) FromFixed32(i uint32) WireFixed32 {
 	*v = WireFixed32(i)
+	return *v
 }
 
 // FromSfixed32 sets the wiretype from a Protobuf fixed32
-func (v *WireFixed32) FromSfixed32(i int32) {
+func (v *WireFixed32) FromSfixed32(i int32) WireFixed32 {
 	*v = WireFixed32(uint32(i))
+	return *v
 }
 
 // FromFloat sets the wiretype from a Protobuf float
-func (v *WireFixed32) FromFloat(i float32) {
+func (v *WireFixed32) FromFloat(i float32) WireFixed32 {
 	*v = WireFixed32(math.Float32bits(i))
+	return *v
 }
 
 // WireFixed64 represents the Protobuf fixed64 wire type
@@ -205,18 +216,21 @@ func (v WireFixed64) AsDouble() float64 {
 }
 
 // FromFixed64 sets the wiretype from a Protobuf fixed64
-func (v *WireFixed64) FromFixed64(i uint64) {
+func (v *WireFixed64) FromFixed64(i uint64) WireFixed64 {
 	*v = WireFixed64(i)
+	return *v
 }
 
 // FromSfixed64 sets the wiretype from a Protobuf fixed64
-func (v *WireFixed64) FromSfixed64(i int64) {
+func (v *WireFixed64) FromSfixed64(i int64) WireFixed64 {
 	*v = WireFixed64(uint64(i))
+	return *v
 }
 
 // FromDouble sets the wiretype from a Protobuf double
-func (v *WireFixed64) FromDouble(i float64) {
+func (v *WireFixed64) FromDouble(i float64) WireFixed64 {
 	*v = WireFixed64(math.Float64bits(i))
+	return *v
 }
 
 // A static table that maps Protobuf types to their respective wire types.
