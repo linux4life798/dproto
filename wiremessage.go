@@ -413,6 +413,94 @@ func (m *WireMessage) EncodeMessage(field FieldNum, value *WireMessage) error {
 	m.AddBytes(field, bytes)
 	return nil
 }
+
+func (m *WireMessage) EncodeAs(field FieldNum, value interface{}, pbtype descriptor.FieldDescriptorProto_Type) error {
+	err := ErrInvalidProtoBufType
+
+	switch pbtype {
+	case descriptor.FieldDescriptorProto_TYPE_INT32:
+		if v, ok := value.(int32); ok {
+			m.EncodeInt32(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_INT64:
+		if v, ok := value.(int64); ok {
+			m.EncodeInt64(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_UINT32:
+		if v, ok := value.(uint32); ok {
+			m.EncodeUint32(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_UINT64:
+		if v, ok := value.(uint64); ok {
+			m.EncodeUint64(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_SINT32:
+		if v, ok := value.(int32); ok {
+			m.EncodeSint32(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_SINT64:
+		if v, ok := value.(int64); ok {
+			m.EncodeSint64(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_BOOL:
+		if v, ok := value.(bool); ok {
+			m.EncodeBool(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_FIXED32:
+		if v, ok := value.(uint32); ok {
+			m.EncodeFixed32(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_SFIXED32:
+		if v, ok := value.(int32); ok {
+			m.EncodeSfixed32(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_FLOAT:
+		if v, ok := value.(float32); ok {
+			m.EncodeFloat(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_FIXED64:
+		if v, ok := value.(uint64); ok {
+			m.EncodeFixed64(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_SFIXED64:
+		if v, ok := value.(int64); ok {
+			m.EncodeSfixed64(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_DOUBLE:
+		if v, ok := value.(float64); ok {
+			m.EncodeDouble(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_STRING:
+		if v, ok := value.(string); ok {
+			m.EncodeString(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_BYTES:
+		if v, ok := value.([]byte); ok {
+			m.EncodeBytes(field, v)
+			err = nil
+		}
+	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
+		if v, ok := value.(*WireMessage); ok {
+			err = m.EncodeMessage(field, v)
+		}
+	}
+	return err
+}
+
 // Unmarshal sorts a ProtoBuf message into it's constituent
 // parts to be such that it's field can be accessed in constant time
 //
