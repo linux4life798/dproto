@@ -190,6 +190,9 @@ func TestUnmarshal(t *testing.T) {
 	testAgainstTestMessage(t, m)
 }
 
+// TestMarshal1 reads the reference protobuf binary, Unmarshals it,
+// then re-Marshals it, and then Unmarshals and verifies the values
+// The unused Enum field should be transfered along for the ride
 func TestMarshal1(t *testing.T) {
 	// Read in file to buffer
 	buf, err := ioutil.ReadFile(protobufBinary)
