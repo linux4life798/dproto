@@ -388,7 +388,7 @@ out:
 				// break out
 				return err
 			}
-			m.AddBytes(FieldNum(field), r)
+			m.AddBytes(field, r)
 
 		case proto.WireFixed32:
 			u, err = pbuf.DecodeFixed32()
@@ -398,7 +398,7 @@ out:
 				return ErrMalformedProtoBuf
 			}
 			// fmt.Printf("%3d: t=%3d fix32 %d\n", index, tag, u)
-			m.AddFixed32(FieldNum(field), WireFixed32(u))
+			m.AddFixed32(field, WireFixed32(u))
 
 		case proto.WireFixed64:
 			u, err = pbuf.DecodeFixed64()
@@ -408,7 +408,7 @@ out:
 				return ErrMalformedProtoBuf
 			}
 			// fmt.Printf("%3d: t=%3d fix64 %d\n", index, tag, u)
-			m.AddFixed64(FieldNum(field), WireFixed64(u))
+			m.AddFixed64(field, WireFixed64(u))
 
 		case proto.WireVarint:
 			u, err = pbuf.DecodeVarint()
@@ -418,7 +418,7 @@ out:
 				return ErrMalformedProtoBuf
 			}
 			// fmt.Printf("%3d: t=%3d varint %d\n", index, tag, u)
-			m.AddVarint(FieldNum(field), WireVarint(u))
+			m.AddVarint(field, WireVarint(u))
 
 		case proto.WireStartGroup:
 			// fmt.Printf("%3d: t=%3d start\n", index, tag)
