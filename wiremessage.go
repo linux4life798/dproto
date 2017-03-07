@@ -19,6 +19,8 @@ import (
 
 	"errors"
 
+	"sort"
+
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
@@ -175,6 +177,8 @@ func (m *WireMessage) GetBytes(field FieldNum) ([]byte, bool) {
  *                High-Level Interface                 *
  *******************************************************/
 
+/////////////////////////////// Decoding /////////////////////////////////////
+
 // DecodeInt32 fetches the wiretype field and decodes it as a Protobuf int32
 func (m *WireMessage) DecodeInt32(field FieldNum) (int32, bool) {
 	val, ok := m.GetVarint(field)
@@ -327,6 +331,7 @@ func (m *WireMessage) DecodeAs(field FieldNum, pbtype descriptor.FieldDescriptor
 	return
 }
 
+/////////////////////////////// Encoding /////////////////////////////////////
 
 // EncodeInt32 adds value to the WireMessage encoded as a Protobuf int32
 func (m *WireMessage) EncodeInt32(field FieldNum, value int32) {
@@ -614,4 +619,90 @@ out:
 	// p.index = index
 
 	return nil
+}
+
+type fieldNumArray []FieldNum
+
+func (fs fieldNumArray) Len() int           { return len(fs) }
+func (fs fieldNumArray) Swap(i, j int)      { fs[i], fs[j] = fs[j], fs[i] }
+func (fs fieldNumArray) Less(i, j int) bool { return fs[i] < fs[j] }
+
+func (m *WireMessage) Marshal() ([]byte, error) {
+	fields := fieldNumArray(m.GetFieldNums())
+	sort.Sort(fields) // protobuf encoding should be in increaing key order
+	pbuf := proto.NewBuffer(make([]byte, 0, 1))
+
+	// Add all fields in the previously created sorted order
+	for _, fnum := range []FieldNum(fields) {
+
+		field, ok := m.GetField(fnum)
+		if !ok {
+			return nil, ErrMessageFieldMissing
+		}
+
+		switch field.(type) {
+		case WireVarint:
+			// Make field the appropriate type
+			f := field.(WireVarint)
+			// Write tag header
+			var tag WireVarint
+			tag.FromTag(fnum, proto.WireVarint)
+			err := pbuf.EncodeVarint(uint64(tag))
+			if err != nil {
+				return nil, err
+			}
+			// Write the field data
+			err = pbuf.EncodeVarint(uint64(f))
+			if err != nil {
+				return nil, err
+			}
+		case WireFixed32:
+			// Make field the appropriate type
+			f := field.(WireFixed32)
+			// Write tag header
+			var tag WireVarint
+			tag.FromTag(fnum, proto.WireFixed32)
+			err := pbuf.EncodeVarint(uint64(tag))
+			if err != nil {
+				return nil, err
+			}
+			// Write the field data
+			err = pbuf.EncodeFixed32(uint64(f))
+			if err != nil {
+				return nil, err
+			}
+		case WireFixed64:
+			// Make field the appropriate type
+			f := field.(WireFixed64)
+			// Write tag header
+			var tag WireVarint
+			tag.FromTag(fnum, proto.WireFixed64)
+			err := pbuf.EncodeVarint(uint64(tag))
+			if err != nil {
+				return nil, err
+			}
+			// Write the field data
+			err = pbuf.EncodeFixed64(uint64(f))
+			if err != nil {
+				return nil, err
+			}
+		case []byte:
+			// Make field the appropriate type
+			f := field.([]byte)
+			// Write tag header
+			var tag WireVarint
+			tag.FromTag(fnum, proto.WireBytes)
+			err := pbuf.EncodeVarint(uint64(tag))
+			if err != nil {
+				return nil, err
+			}
+			// Write the field data
+			err = pbuf.EncodeRawBytes(f)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	return pbuf.Bytes(), nil
 }
