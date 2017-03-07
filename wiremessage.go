@@ -5,6 +5,10 @@
 // and methods allow access to wire-level message data.
 // You can use this interface if you do not want dproto to manage
 // associations.
+//
+// Notes: We should have a stream Reader interface that can read and
+//        and interpret bytes from a buffer synchronously. Not just the readall
+//        and process later methods.
 
 package dproto
 
@@ -363,8 +367,7 @@ out:
 		}
 
 		// Decompose the tag into the field number and the wiretype
-		field := tag >> 3 // variable length uint
-		wire := tag & 7   // always uses bottom three bits
+		field, wire := WireVarint(tag).AsTag()
 
 		// Switch on the wire type
 		switch wire {
@@ -383,21 +386,6 @@ out:
 				// break out
 				return err
 			}
-			// fmt.Printf("%3d: t=%3d bytes [%d]", index, tag, len(r))
-			// if len(r) <= 6 {
-			// 	for i := 0; i < len(r); i++ {
-			// 		fmt.Printf(" %.2x", r[i])
-			// 	}
-			// } else {
-			// 	for i := 0; i < 3; i++ {
-			// 		fmt.Printf(" %.2x", r[i])
-			// 	}
-			// 	fmt.Printf(" ..")
-			// 	for i := len(r) - 3; i < len(r); i++ {
-			// 		fmt.Printf(" %.2x", r[i])
-			// 	}
-			// }
-			// fmt.Printf("\n")
 			m.AddBytes(FieldNum(field), r)
 
 		case proto.WireFixed32:
