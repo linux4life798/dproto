@@ -42,6 +42,7 @@ var ans = []Answer{
 	float32(3.227799),
 }
 
+// protobufBinary The reference file generated from nanopb
 const protobufBinary = "testprotobuf.bin"
 
 // go test -v

@@ -229,7 +229,7 @@ func (m *WireMessage) DecodeSfixed32(field FieldNum) (int32, bool) {
 	return val.AsSfixed32(), ok
 }
 
-// DecodeFloat fetches the wiretype field and decodes it as a Protobuf float
+// DecodeFloat fetches the field from m and decodes it as a Protobuf float
 func (m *WireMessage) DecodeFloat(field FieldNum) (float32, bool) {
 	val, ok := m.GetFixed32(field)
 	return val.AsFloat(), ok
@@ -277,6 +277,8 @@ func (m *WireMessage) DecodeMessage(field FieldNum) (*WireMessage, error) {
 	return nil, ErrMessageFieldMissing
 }
 
+// DecodeAs fetches the field from m and decodes it as the specified
+// Protobuf type
 func (m *WireMessage) DecodeAs(field FieldNum, pbtype descriptor.FieldDescriptorProto_Type) (val interface{}, err error) {
 	val = 0
 	err = nil
