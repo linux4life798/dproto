@@ -36,17 +36,17 @@ type WireVarint uint64
 // AsTag returns the field number and field type encoded in the varint as a tag
 //
 // This is a low level method for parsing the raw protobuf buffer
-func (v WireVarint) AsTag() (uint64, WireType) {
-	field := uint64(v) >> 3 // variable length uint
-	wire := WireType(v & 7) // always uses bottom three bits
+func (v WireVarint) AsTag() (FieldNum, WireType) {
+	field := FieldNum(uint64(v) >> 3) // variable length uint
+	wire := WireType(v & 7)           // always uses bottom three bits
 	return field, wire
 }
 
 // FromTag combines the field number and wire type to form the message field tag
 //
 // This is a low level method for parsing the raw protobuf buffer
-func (v *WireVarint) FromTag(field uint64, wire WireType) {
-	*v = WireVarint((field << 3) | (uint64(wire) & 7))
+func (v *WireVarint) FromTag(field FieldNum, wire WireType) {
+	*v = WireVarint((uint64(field) << 3) | (uint64(wire) & 7))
 }
 
 // AsInt32 returns the wiretype interpreted as a Protobuf int32

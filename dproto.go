@@ -26,7 +26,7 @@ import (
 )
 
 // FieldNum represents Protobuf's field numbers
-type FieldNum uint32
+type FieldNum uint64
 
 type FieldValue struct {
 	Field FieldNum
