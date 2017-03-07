@@ -21,6 +21,27 @@ import (
 // message.myfixed32 = 445545;
 // message.mysfixed32 = -30423;
 // message.myfloat = 3.227799;
+
+type Answer interface{}
+
+var ans = []Answer{
+	int32(32423),
+	int64(-98327),
+	uint32(1),
+	uint64(962329),
+	int32(-231),
+	int64(-3932764127),
+	bool(true),
+	//
+	uint64(342647260612),
+	int64(-324),
+	float64(3.1456),
+	//
+	uint32(445545),
+	int32(-30423),
+	float32(3.227799),
+}
+
 const protobufBinary = "testprotobuf.bin"
 
 // go test -v
@@ -45,42 +66,63 @@ func TestUnmarshal(t *testing.T) {
 		t.Error("Failed to find myint32")
 	}
 	t.Logf("myint32 = %d\n", myint32)
+	if myint32 != ans[0] {
+		t.Error("myint32 did not match expected value")
+	}
 
 	myint64, ok := m.DecodeInt64(2)
 	if ok == false {
 		t.Error("Failed to find myint64")
 	}
 	t.Logf("myint64 = %d\n", myint64)
+	if myint64 != ans[1] {
+		t.Error("myint64 did not match expected value")
+	}
 
 	myuint32, ok := m.DecodeUint32(3)
 	if ok == false {
 		t.Error("Failed to find myuint32")
 	}
 	t.Logf("myuint32 = %d\n", myuint32)
+	if myuint32 != ans[2] {
+		t.Error("myuint32 did not match expected value")
+	}
 
 	myuint64, ok := m.DecodeUint64(4)
 	if ok == false {
 		t.Error("Failed to find myuint64")
 	}
 	t.Logf("myuint64 = %d\n", myuint64)
+	if myuint64 != ans[3] {
+		t.Error("myuint64 did not match expected value")
+	}
 
 	mysint32, ok := m.DecodeSint32(5)
 	if ok == false {
 		t.Error("Failed to find mysint32")
 	}
 	t.Logf("mysint32 = %d\n", mysint32)
+	if mysint32 != ans[4] {
+		t.Error("mysint32 did not match expected value")
+	}
 
 	mysint64, ok := m.DecodeSint64(6)
 	if ok == false {
 		t.Error("Failed to find mysint64")
 	}
 	t.Logf("mysint64 = %d\n", mysint64)
+	if mysint64 != ans[5] {
+		t.Error("mysint64 did not match expected value")
+	}
 
 	mybool, ok := m.DecodeBool(7)
 	if ok == false {
 		t.Error("Failed to find mybool")
 	}
 	t.Logf("mybool = %t\n", mybool)
+	if mybool != ans[6] {
+		t.Error("mybool did not match expected value")
+	}
 
 	// myenum, ok := m.DecodeEnum(8)
 	// if ok == false {
@@ -93,34 +135,52 @@ func TestUnmarshal(t *testing.T) {
 		t.Error("Failed to find myfixed64")
 	}
 	t.Logf("myfixed64 = %d\n", myfixed64)
+	if myfixed64 != ans[7] {
+		t.Error("myfixed64 did not match expected value")
+	}
 
 	mysfixed64, ok := m.DecodeSfixed64(10)
 	if ok == false {
 		t.Error("Failed to find mysfixed64")
 	}
 	t.Logf("mysfixed64 = %d\n", mysfixed64)
+	if mysfixed64 != ans[8] {
+		t.Error("mysfixed64 did not match expected value")
+	}
 
 	mydouble, ok := m.DecodeDouble(11)
 	if ok == false {
 		t.Error("Failed to find mydouble")
 	}
 	t.Logf("mydouble = %f\n", mydouble)
+	if mydouble != ans[9] {
+		t.Error("mydouble did not match expected value")
+	}
 
 	myfixed32, ok := m.DecodeFixed32(12)
 	if ok == false {
 		t.Error("Failed to find myfixed32")
 	}
 	t.Logf("myfixed32 = %d\n", myfixed32)
+	if myfixed32 != ans[10] {
+		t.Error("myfixed32 did not match expected value")
+	}
 
 	mysfixed32, ok := m.DecodeSfixed32(13)
 	if ok == false {
 		t.Error("Failed to find mysfixed32")
 	}
 	t.Logf("mysfixed32 = %d\n", mysfixed32)
+	if mysfixed32 != ans[11] {
+		t.Error("mysfixed32 did not match expected value")
+	}
 
 	myfloat, ok := m.DecodeFloat(14)
 	if ok == false {
 		t.Error("Failed to find myfloat")
 	}
 	t.Logf("myfloat = %f\n", myfloat)
+	if myfloat != ans[12] {
+		t.Error("myfloat did not match expected value")
+	}
 }
