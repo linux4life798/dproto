@@ -5,6 +5,8 @@ import (
 	"testing"
 )
 
+/* The following fields were set in a nanopb C program */
+
 // message.myint32 = 32423;
 // message.myint64 = -98327;
 // message.myuint32 = 1;
@@ -12,6 +14,7 @@ import (
 // message.mysint32 = -231;
 // message.mysint64 = -3932764127;
 // message.mybool = true;
+// This Enum field is in nthere, but not yet parsible
 // message.myenum = TestEnum_THIRD;
 
 // message.myfixed64 = 342647260612;
