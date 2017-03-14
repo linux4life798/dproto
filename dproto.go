@@ -52,6 +52,7 @@ func (fm *ProtoFieldMap) Reset() {
 
 // Add adds a Field-Type association to a ProtoFieldMap
 func (fm *ProtoFieldMap) Add(field FieldNum, typ descriptor.FieldDescriptorProto_Type) (ok bool) {
+	// check that the typ is valid
 	if _, ok := protoType2WireType[typ]; ok {
 		fm.field2type[field] = typ
 	}
