@@ -6,4 +6,4 @@ Since we all marshalling and unmarshalling Protobuf messages in a dynamic way,
 the project is called *dproto*.
 
 # Status
-**Under Construction**
+Encoding and Decoding messages works
