@@ -90,6 +90,12 @@ func (fm *ProtoFieldMap) RemoveByType(typ descriptor.FieldDescriptorProto_Type) 
 	return true
 }
 
+// Get gets the Protobuf type associated with the field number
+func (fm *ProtoFieldMap) Get(field FieldNum) (descriptor.FieldDescriptorProto_Type, bool) {
+	typ, ok := fm.field2type[field]
+	return typ, ok
+}
+
 // Print shows the ProtoFieldMap to the user for debugging purposes.
 func (fm *ProtoFieldMap) Print() {
 	fmt.Println(fm)
