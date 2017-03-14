@@ -128,6 +128,32 @@ func (fm *ProtoFieldMap) DecodeBuffer(buf []byte) ([]FieldValue, error) {
 	return fm.DecodeMessage(m)
 }
 
+// EncodeMessage will marshal and encode all fields given. The output is a
+// new message.
+func (fm *ProtoFieldMap) EncodeMessage(values []FieldValue) (*WireMessage, error) {
+	m := NewWireMessage()
+	for _, v := range values {
+		if err := m.EncodeAs(v.Field, v.Value, fm.field2type[v.Field]); err != nil {
+			return nil, err
+		}
+	}
+	return m, nil
+}
+
+// EncodeBuffer will marshal and encode all fields given. The output is a
+// raw buffer.
+func (fm *ProtoFieldMap) EncodeBuffer(values []FieldValue) ([]byte, error) {
+	m, err := fm.EncodeMessage(values)
+	if err != nil {
+		return nil, err
+	}
+	b, err := m.Marshal()
+	if err != nil {
+		return nil, err
+	}
+	return b, nil
+}
+
 // Unmarshal will unmarshal a byte array into a WireMessage
 func Unmarshal(buf []byte) (*WireMessage, error) {
 	m := NewWireMessage()
