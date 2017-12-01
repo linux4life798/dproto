@@ -53,7 +53,7 @@ func (fm *ProtoFieldMap) Reset() {
 // Add adds a Field-Type association to a ProtoFieldMap
 func (fm *ProtoFieldMap) Add(field FieldNum, typ descriptor.FieldDescriptorProto_Type) (ok bool) {
 	// check that the typ is valid
-	if _, ok := protoType2WireType[typ]; ok {
+	if _, ok = protoType2WireType[typ]; ok {
 		fm.field2type[field] = typ
 	}
 	return
@@ -63,7 +63,7 @@ func (fm *ProtoFieldMap) Add(field FieldNum, typ descriptor.FieldDescriptorProto
 // that has the specified field number.
 // It returns true if the association was found and removed, false otherwise
 func (fm *ProtoFieldMap) RemoveByField(field FieldNum) (ok bool) {
-	if _, ok := fm.field2type[field]; ok {
+	if _, ok = fm.field2type[field]; ok {
 		delete(fm.field2type, field)
 	}
 	return
