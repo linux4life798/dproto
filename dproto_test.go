@@ -291,3 +291,95 @@ func TestMarshal2(t *testing.T) {
 
 	testAgainstTestMessage(t, m)
 }
+
+func BenchmarkWireMessageMarshal(b *testing.B) {
+	m := NewWireMessage()
+
+	// message.myint32 = 32423;
+	m.EncodeInt32(1, 32423)
+	// message.myint64 = -98327;
+	m.EncodeInt64(2, -98327)
+	// message.myuint32 = 1;
+	m.EncodeUint32(3, 1)
+	// message.myuint64 = 962329;
+	m.EncodeUint64(4, 962329)
+	// message.mysint32 = -231;
+	m.EncodeSint32(5, -231)
+	// message.mysint64 = -3932764127;
+	m.EncodeSint64(6, -3932764127)
+	// message.mybool = true;
+	m.EncodeBool(7, true)
+	// message.myenum = TestEnum_THIRD;
+	// m.EncodeEnum(8, 3)
+	// BIG NOTE: This does not yet incluse the enum, so two bytes won't match
+
+	// message.myfixed64 = 342647260612;
+	m.EncodeFixed64(9, 342647260612)
+	// message.mysfixed64 = -324;
+	m.EncodeSfixed64(10, -324)
+	// message.mydouble = 3.1456;
+	m.EncodeDouble(11, 3.1456)
+
+	// message.myfixed32 = 445545;
+	m.EncodeFixed32(12, 445545)
+	// message.mysfixed32 = -30423;
+	m.EncodeSfixed32(13, -30423)
+	// message.myfloat = 3.227799;
+	m.EncodeFloat(14, 3.227799)
+
+	for i := 0; i < b.N; i++ {
+		_, err := m.Marshal()
+		if err != nil {
+			b.Error("Error Marshaling: " + err.Error())
+		}
+	}
+}
+
+func BenchmarkWireMessageUnmarshal(b *testing.B) {
+	m := NewWireMessage()
+
+	// message.myint32 = 32423;
+	m.EncodeInt32(1, 32423)
+	// message.myint64 = -98327;
+	m.EncodeInt64(2, -98327)
+	// message.myuint32 = 1;
+	m.EncodeUint32(3, 1)
+	// message.myuint64 = 962329;
+	m.EncodeUint64(4, 962329)
+	// message.mysint32 = -231;
+	m.EncodeSint32(5, -231)
+	// message.mysint64 = -3932764127;
+	m.EncodeSint64(6, -3932764127)
+	// message.mybool = true;
+	m.EncodeBool(7, true)
+	// message.myenum = TestEnum_THIRD;
+	// m.EncodeEnum(8, 3)
+	// BIG NOTE: This does not yet incluse the enum, so two bytes won't match
+
+	// message.myfixed64 = 342647260612;
+	m.EncodeFixed64(9, 342647260612)
+	// message.mysfixed64 = -324;
+	m.EncodeSfixed64(10, -324)
+	// message.mydouble = 3.1456;
+	m.EncodeDouble(11, 3.1456)
+
+	// message.myfixed32 = 445545;
+	m.EncodeFixed32(12, 445545)
+	// message.mysfixed32 = -30423;
+	m.EncodeSfixed32(13, -30423)
+	// message.myfloat = 3.227799;
+	m.EncodeFloat(14, 3.227799)
+
+	bytes, err := m.Marshal()
+	if err != nil {
+		b.Error("Error Marshaling: " + err.Error())
+	}
+
+	for i := 0; i < b.N; i++ {
+		// Unmarshal the already marshalled bytes
+		m, err = Unmarshal(bytes)
+		if err != nil {
+			b.Error("Error Unmarshaling: " + err.Error())
+		}
+	}
+}
