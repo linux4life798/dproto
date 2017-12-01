@@ -285,7 +285,7 @@ func TestMarshal2(t *testing.T) {
 	// Unmarshal the already marshalled bytes
 	m, err = Unmarshal(bytes)
 	if err != nil {
-		t.Error(err.Error())
+		t.Error("Error Unmarshaling: " + err.Error())
 	}
 	t.Log("Unmarshalled the buffer that we just unmarshalled")
 
