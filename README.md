@@ -15,7 +15,7 @@ The intent of this library was to allow creating long running services that can
 interpret and interface with clients using new/unknown protobuf messages.
 
 The basic idea is that you construct a `ProtoFieldMap` that contains any protobuf
-field number to protobuf type associations you are interested in and then you 
+field number to protobuf type associations you are interested in and then you
 call `DecodeBUffer` on the protobuf payload.
 `DecodeBuffer` returns an array of `FieldValue`s that it decoded from the payload.
 Each `FieldValue` specifies the protobuf field number and value decoded as a Golang
