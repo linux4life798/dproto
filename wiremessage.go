@@ -25,11 +25,6 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
 
-const (
-	defaultMarshalBuffSize = 10
-	baseFnumsCapacity      = 10
-)
-
 // ErrMalformedProtoBuf is returned when some operation has determined that
 // that a message field/types association does not agree with a message
 var ErrMalformedProtoBuf = errors.New("Malformed protobuf buffer")

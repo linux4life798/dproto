@@ -377,8 +377,7 @@ func BenchmarkWireMessageUnmarshal(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		// Unmarshal the already marshalled bytes
-		m, err = Unmarshal(bytes)
-		if err != nil {
+		if _, err := Unmarshal(bytes); err != nil {
 			b.Error("Error Unmarshaling: " + err.Error())
 		}
 	}
