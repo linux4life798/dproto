@@ -1,5 +1,6 @@
 # dproto
 [![GoDoc](https://godoc.org/github.com/linux4life798/dproto?status.png)](https://godoc.org/github.com/linux4life798/dproto)
+[![Build Status](https://travis-ci.org/linux4life798/dproto.svg?branch=master)](https://travis-ci.org/linux4life798/dproto)
 
 # Description
 This library allows you to use Protobufs (Google Protocol Buffers) without needing to
