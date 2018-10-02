@@ -28,6 +28,7 @@ import (
 // FieldNum represents Protobuf's field numbers
 type FieldNum uint64
 
+// FieldValue represents deserialized value with it's associated field number
 type FieldValue struct {
 	Field FieldNum
 	Value interface{}
