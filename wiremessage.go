@@ -42,9 +42,9 @@ var ErrInvalidProtoBufType = errors.New("Invalid protobuf type")
 // below key-values, where the key is the field number and the value is
 // is converted to a wiretype.
 //
-// This design is not exactly efficient for sending the fields in FielndNum
+// This design is not exactly efficient for sending the fields in FieldNum
 // order. For this reason, this implementation may be changed out in a later
-// date. Sending fields in numerical order is reccomended on the Protobuf
+// date. Sending fields in numerical order is recommended on the Protobuf
 // website.
 type WireMessage struct {
 	varint  map[FieldNum]WireVarint

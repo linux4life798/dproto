@@ -195,7 +195,7 @@ func TestUnmarshal(t *testing.T) {
 
 // TestMarshal1 reads the reference protobuf binary, Unmarshals it,
 // then re-Marshals it, and then Unmarshals and verifies the values
-// The unused Enum field should be transfered along for the ride
+// The unused Enum field should be transferred along for the ride
 func TestMarshal1(t *testing.T) {
 	// Read in file to buffer
 	buf, err := ioutil.ReadFile(protobufBinary)
@@ -254,7 +254,7 @@ func TestMarshal2(t *testing.T) {
 	m.EncodeBool(7, true)
 	// message.myenum = TestEnum_THIRD;
 	// m.EncodeEnum(8, 3)
-	// BIG NOTE: This does not yet incluse the enum, so two bytes won't match
+	// BIG NOTE: This does not yet include the enum, so two bytes won't match
 
 	// message.myfixed64 = 342647260612;
 	m.EncodeFixed64(9, 342647260612)
@@ -311,7 +311,7 @@ func BenchmarkWireMessageMarshal(b *testing.B) {
 	m.EncodeBool(7, true)
 	// message.myenum = TestEnum_THIRD;
 	// m.EncodeEnum(8, 3)
-	// BIG NOTE: This does not yet incluse the enum, so two bytes won't match
+	// BIG NOTE: This does not yet include the enum, so two bytes won't match
 
 	// message.myfixed64 = 342647260612;
 	m.EncodeFixed64(9, 342647260612)
@@ -354,7 +354,7 @@ func BenchmarkWireMessageUnmarshal(b *testing.B) {
 	m.EncodeBool(7, true)
 	// message.myenum = TestEnum_THIRD;
 	// m.EncodeEnum(8, 3)
-	// BIG NOTE: This does not yet incluse the enum, so two bytes won't match
+	// BIG NOTE: This does not yet include the enum, so two bytes won't match
 
 	// message.myfixed64 = 342647260612;
 	m.EncodeFixed64(9, 342647260612)
