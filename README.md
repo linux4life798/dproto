@@ -1,6 +1,7 @@
 # dproto
 [![GoDoc](https://godoc.org/github.com/linux4life798/dproto?status.png)](https://godoc.org/github.com/linux4life798/dproto)
 [![Go Report Card](https://goreportcard.com/badge/github.com/linux4life798/dproto)](https://goreportcard.com/report/github.com/linux4life798/dproto)
+[![codecov](https://codecov.io/gh/linux4life798/dproto/branch/master/graph/badge.svg)](https://codecov.io/gh/linux4life798/dproto)
 [![Build Status](https://travis-ci.org/linux4life798/dproto.svg?branch=master)](https://travis-ci.org/linux4life798/dproto)
 
 # Description
