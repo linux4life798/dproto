@@ -152,11 +152,11 @@ func ExampleNewProtoFieldMap() {
 
 	// Provide some values for our "status" and "intensity"
 	values := []dproto.FieldValue{
-		dproto.FieldValue{
+		{
 			Field: 1, // status field number
 			Value: bool(true),
 		},
-		dproto.FieldValue{
+		{
 			Field: 2, // intensity field number
 			Value: int64(10),
 		},
