@@ -108,16 +108,16 @@ func (m *WireMessage) GetFieldCount() int {
 // GetFieldNums gets all field numbers contained in the WireMessage
 func (m *WireMessage) GetFieldNums() []FieldNum {
 	fields := make([]FieldNum, 0, m.GetFieldCount())
-	for k, _ := range m.varint {
+	for k := range m.varint {
 		fields = append(fields, k)
 	}
-	for k, _ := range m.fixed32 {
+	for k := range m.fixed32 {
 		fields = append(fields, k)
 	}
-	for k, _ := range m.fixed64 {
+	for k := range m.fixed64 {
 		fields = append(fields, k)
 	}
-	for k, _ := range m.bytes {
+	for k := range m.bytes {
 		fields = append(fields, k)
 	}
 	return fields
