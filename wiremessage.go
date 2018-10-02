@@ -626,6 +626,7 @@ func (fs fieldNumArray) Len() int           { return len(fs) }
 func (fs fieldNumArray) Swap(i, j int)      { fs[i], fs[j] = fs[j], fs[i] }
 func (fs fieldNumArray) Less(i, j int) bool { return fs[i] < fs[j] }
 
+// Marshal generates the byte stream for a given WireMessage
 func (m *WireMessage) Marshal() ([]byte, error) {
 	fields := fieldNumArray(m.GetFieldNums())
 	sort.Sort(fields) // protobuf encoding should be in increaing key order
